@@ -1,0 +1,57 @@
+#!/usr/bin/perl
+
+use strict;
+use IO::File;
+
+# PODNAME: frag
+# ABSTRACT: Fragment files into parts for sneaker nets
+# VERSION
+
+my $fn = shift;
+
+unless(defined $fn) {
+	print "usage: nx frag filename [size]\n";
+	print "(size is in MB, default is 128MB)\n";
+	exit;
+}
+
+my $usersize = shift;
+$usersize = 128 unless defined $usersize;
+
+my $ksize = 1024 * $usersize;	# 128MB
+
+mkdir "$fn.fragdir";
+
+my $count = 0;
+
+my $in =  new IO::File;
+my $out = new IO::File;
+
+$in->open($fn) || die "unable to read $fn $!";
+$in->binmode;
+
+my $outfn = outfn();
+$out->open(">$outfn") || die "unable to write $outfn $!";
+$out->binmode;
+
+my $count2 = 0;
+my $buffer;
+while(my $br = read $in, $buffer, 1024)
+{
+	$out->print($buffer);
+	if(++$count2> $ksize)
+	{
+		$out->close;
+		$outfn = outfn();
+		$out->open(">$outfn") || die "unable to write $outfn $!";
+		$out->binmode;
+		$count2 = 0;
+	}
+}
+
+$out->close;
+
+sub outfn
+{
+	return sprintf("$fn.fragdir/$fn.%03d.frag", $count++);
+}
