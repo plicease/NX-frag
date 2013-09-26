@@ -2,6 +2,7 @@
 
 use strict;
 use IO::File;
+use Number::Bytes::Human qw( parse_bytes );
 
 # PODNAME: frag
 # ABSTRACT: Fragment files into parts for sneaker nets
@@ -11,14 +12,15 @@ my $fn = shift;
 
 unless(defined $fn) {
 	print "usage: nx frag filename [size]\n";
-	print "(size is in MB, default is 128MB)\n";
+	print "(size is in bytes, default is 128MB)\n";
 	exit;
 }
 
 my $usersize = shift;
-$usersize = 128 unless defined $usersize;
+$usersize = "128MiB" unless defined $usersize;
 
-my $ksize = 1024 * $usersize;	# 128MB
+my $ksize = parse_bytes($usersize)/1024;
+$ksize ||= 1;
 
 mkdir "$fn.fragdir";
 
