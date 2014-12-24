@@ -1,7 +1,6 @@
 language: perl
 
-#install:
-#  - cpanm -n Foo::Bar
+sudo: false
 
 perl:
   - "5.10"
