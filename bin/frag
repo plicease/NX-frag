@@ -11,9 +11,9 @@ use Number::Bytes::Human qw( parse_bytes );
 my $fn = shift;
 
 unless(defined $fn) {
-	print "usage: nx frag filename [size]\n";
-	print "(size is in bytes, default is 128MB)\n";
-	exit;
+  print "usage: nx frag filename [size]\n";
+  print "(size is in bytes, default is 128MB)\n";
+  exit;
 }
 
 my $usersize = shift;
@@ -40,20 +40,20 @@ my $count2 = 0;
 my $buffer;
 while(my $br = read $in, $buffer, 1024)
 {
-	$out->print($buffer);
-	if(++$count2> $ksize)
-	{
-		$out->close;
-		$outfn = outfn();
-		$out->open(">$outfn") || die "unable to write $outfn $!";
-		$out->binmode;
-		$count2 = 0;
-	}
+  $out->print($buffer);
+  if(++$count2> $ksize)
+  {
+    $out->close;
+    $outfn = outfn();
+    $out->open(">$outfn") || die "unable to write $outfn $!";
+    $out->binmode;
+    $count2 = 0;
+  }
 }
 
 $out->close;
 
 sub outfn
 {
-	return sprintf("$fn.fragdir/$fn.%03d.frag", $count++);
+  return sprintf("$fn.fragdir/$fn.%03d.frag", $count++);
 }
